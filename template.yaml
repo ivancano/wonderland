@@ -1,0 +1,41 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  wonderland
+
+  Sample SAM Template for wonderland
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Timeout: 3
+
+    # You can add LoggingConfig parameters such as the Logformat, Log Group, and SystemLogLevel or ApplicationLogLevel. Learn more here https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html#sam-function-loggingconfig.
+    LoggingConfig:
+      LogFormat: JSON
+Resources:
+  SequencerFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: lambda
+      Handler: app.handler
+      Runtime: nodejs20.x
+      Timeout: 60
+      Architectures:
+      - x86_64
+    Metadata: # Manage esbuild properties
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: es2020
+        Sourcemap: true
+        EntryPoints:
+        - src/app.ts
+
+Outputs:
+  SequencerFunction:
+    Description: Sequencer Lambda Function ARN
+    Value: !GetAtt SequencerFunction.Arn
+  SequencerFunctionIamRole:
+    Description: Implicit IAM Role created for Sequencer function
+    Value: !GetAtt SequencerFunctionRole.Arn
